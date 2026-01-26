@@ -274,6 +274,33 @@
 .type-steel { background: #B8B8D0; color: #333; }
 .type-fairy { background: #EE99AC; }
 
+/* Battle Button */
+.battle-button {
+  margin-top: 20px;
+  padding: 15px 30px;
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.battle-button:hover {
+  background: linear-gradient(135deg, #c0392b, #a93226);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(231, 76, 60, 0.6);
+}
+
+.battle-button:active {
+  transform: translateY(0);
+}
+
 /* Responsive */
 @media (max-width: 968px) {
   .pokemon-content {
@@ -293,3 +320,4 @@
   .pokemon-moves-section {
     max-height: none;
   }
+}
