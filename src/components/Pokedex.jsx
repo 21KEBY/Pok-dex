@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Screen from './Screen'
 import Controls from './Controls'
+import BattleShowdown from './BattleShowdown'
 import './Pokedex.css'
 
 const Pokedex = () => {
@@ -9,7 +10,10 @@ const Pokedex = () => {
   const [selectedPokemon, setSelectedPokemon] = useState(null)
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
-  const [generation, setGeneration] = useState(1) // Génération actuelle
+  const [generation, setGeneration] = useState(1)
+  const [battleMode, setBattleMode] = useState(false)
+  const [opponent, setOpponent] = useState(null)
+  const [selectingOpponent, setSelectingOpponent] = useState(false)
 
   // Charger les Pokémons au démarrage
   useEffect(() => {
@@ -85,43 +89,77 @@ const Pokedex = () => {
     pokemon.id.toString().includes(searchTerm)
   )
 
+  const handleStartBattle = (player, adversary) => {
+    setSelectedPokemon(player)
+    setOpponent(adversary)
+    setBattleMode(true)
+  }
+
+  const handleQuickBattle = (pokemon) => {
+    // Si pas encore d'adversaire sélectionné, afficher le sélecteur dans Controls
+    setSelectedPokemon(pokemon)
+    // On va ouvrir le mode de sélection d'adversaire dans Controls via un état
+  }
+
   return (
     <div className={`pokedex gen-${generation}`}>
-      <div className="pokedex-top">
-        <div className="led-lights">
-          <div className="led led-blue"></div>
-          <div className="led led-red"></div>
-          <div className="led led-yellow"></div>
-          <div className="led led-green"></div>
-        </div>
-      </div>
-
-      <div className="pokedex-body">
-        <Screen 
-          selectedPokemon={selectedPokemon}
-          loading={loading}
-        />
-
-        <Controls 
-          pokemons={filteredPokemons}
-          selectedPokemon={selectedPokemon}
-          setSelectedPokemon={setSelectedPokemon}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
+      {battleMode && selectedPokemon && opponent && (
+        <BattleShowdown 
+          pokemon1={selectedPokemon}
+          pokemon2={opponent}
           generation={generation}
-          setGeneration={setGeneration}
+          onClose={() => {
+            setBattleMode(false)
+            setOpponent(null)
+          }}
         />
-      </div>
+      )}
 
-      <div className="pokedex-bottom">
-        <div className="hinge"></div>
-        <div className="speaker">
-          <div className="speaker-line"></div>
-          <div className="speaker-line"></div>
-          <div className="speaker-line"></div>
-          <div className="speaker-line"></div>
-        </div>
-      </div>
+      {!battleMode && (
+        <>
+          <div className="pokedex-top">
+            <div className="led-lights">
+              <div className="led led-blue"></div>
+              <div className="led led-red"></div>
+              <div className="led led-yellow"></div>
+              <div className="led led-green"></div>
+            </div>
+          </div>
+
+          <div className="pokedex-body">
+            <Screen 
+              selectedPokemon={selectedPokemon}
+              loading={loading}
+              onBattle={() => setSelectingOpponent(true)}
+              generation={generation}
+              pokemons={pokemons}
+            />
+
+            <Controls 
+              pokemons={filteredPokemons}
+              selectedPokemon={selectedPokemon}
+              setSelectedPokemon={setSelectedPokemon}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              generation={generation}
+              setGeneration={setGeneration}
+              onStartBattle={handleStartBattle}
+              selectingOpponent={selectingOpponent}
+              setSelectingOpponent={setSelectingOpponent}
+            />
+          </div>
+
+          <div className="pokedex-bottom">
+            <div className="hinge"></div>
+            <div className="speaker">
+              <div className="speaker-line"></div>
+              <div className="speaker-line"></div>
+              <div className="speaker-line"></div>
+              <div className="speaker-line"></div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }

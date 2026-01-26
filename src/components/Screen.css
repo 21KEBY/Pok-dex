@@ -278,3 +278,37 @@
   font-weight: bold;
   text-align: right;
 }
+
+.btn-battle-quick {
+  margin-top: 20px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #FFD700, #FFC700);
+  color: #000;
+  border: 3px solid #FF8C00;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  align-self: stretch;
+}
+
+.btn-battle-quick:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 215, 0, 0.6);
+  background: linear-gradient(135deg, #FFC700, #FFB700);
+}
+
+.btn-battle-quick:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+}
+
+.btn-battle-quick:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}

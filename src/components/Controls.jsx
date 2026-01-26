@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import './Controls.css'
 import PokemonImage from './PokemonImage'
 
@@ -8,7 +9,10 @@ const Controls = ({
   searchTerm, 
   setSearchTerm,
   generation,
-  setGeneration 
+  setGeneration,
+  onStartBattle,
+  selectingOpponent,
+  setSelectingOpponent
 }) => {
   return (
     <div className="controls">
@@ -38,24 +42,69 @@ const Controls = ({
       </div>
 
       <div className="pokemon-list">
-        {pokemons.map((pokemon) => (
-          <div
-            key={pokemon.id}
-            className={`pokemon-card ${selectedPokemon?.id === pokemon.id ? 'selected' : ''}`}
-            onClick={() => setSelectedPokemon(pokemon)}
-          >
-            <PokemonImage
-              src={pokemon.image}
-              fallbackSrc={pokemon.fallbackImage}
-              alt={pokemon.name}
-              className="pokemon-card-image"
-            />
-            <div className="pokemon-card-info">
-              <span className="pokemon-card-number">#{String(pokemon.id).padStart(3, '0')}</span>
-              <span className="pokemon-card-name">{pokemon.name}</span>
+        {selectingOpponent ? (
+          <>
+            <div className="opponent-selection-header">
+              <h3>Choisissez un adversaire</h3>
+              <button 
+                className="btn-cancel-opponent"
+                onClick={() => setSelectingOpponent(false)}
+              >
+                ✕
+              </button>
             </div>
-          </div>
-        ))}
+            {pokemons.map((pokemon) => (
+              <div
+                key={pokemon.id}
+                className="pokemon-card opponent-card"
+                onClick={() => {
+                  onStartBattle(selectedPokemon, pokemon)
+                  setSelectingOpponent(false)
+                }}
+              >
+                <PokemonImage
+                  src={pokemon.image}
+                  fallbackSrc={pokemon.fallbackImage}
+                  alt={pokemon.name}
+                  className="pokemon-card-image"
+                />
+                <div className="pokemon-card-info">
+                  <span className="pokemon-card-number">#{String(pokemon.id).padStart(3, '0')}</span>
+                  <span className="pokemon-card-name">{pokemon.name}</span>
+                </div>
+              </div>
+            ))}
+          </>
+        ) : (
+          <>
+            {pokemons.map((pokemon) => (
+              <div
+                key={pokemon.id}
+                className={`pokemon-card ${selectedPokemon?.id === pokemon.id ? 'selected' : ''}`}
+                onClick={() => setSelectedPokemon(pokemon)}
+              >
+                <PokemonImage
+                  src={pokemon.image}
+                  fallbackSrc={pokemon.fallbackImage}
+                  alt={pokemon.name}
+                  className="pokemon-card-image"
+                />
+                <div className="pokemon-card-info">
+                  <span className="pokemon-card-number">#{String(pokemon.id).padStart(3, '0')}</span>
+                  <span className="pokemon-card-name">{pokemon.name}</span>
+                </div>
+              </div>
+            ))}
+            {selectedPokemon && (
+              <button 
+                className="btn-start-battle"
+                onClick={() => setSelectingOpponent(true)}
+              >
+                ⚔️ Défier en Combat
+              </button>
+            )}
+          </>
+        )}
       </div>
     </div>
   )
