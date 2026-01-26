@@ -160,6 +160,79 @@
   box-shadow: 0 4px 20px rgba(79, 195, 247, 0.6);
 }
 
+.pokemon-card.opponent-card {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pokemon-card.opponent-card:hover {
+  background: rgba(220, 20, 60, 0.3);
+  border-color: #DC143C;
+  box-shadow: 0 0 15px rgba(220, 20, 60, 0.5);
+}
+
+.opponent-selection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: rgba(220, 20, 60, 0.2);
+  border: 2px solid #DC143C;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  grid-column: 1 / -1;
+}
+
+.opponent-selection-header h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.btn-cancel-opponent {
+  background: #DC143C;
+  color: white;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.2s ease;
+}
+
+.btn-cancel-opponent:hover {
+  background: #B31B2D;
+  transform: scale(1.1);
+}
+
+.btn-start-battle {
+  grid-column: 1 / -1;
+  padding: 15px;
+  background: linear-gradient(135deg, #FFD700, #FFC700);
+  color: #000;
+  border: 3px solid #FF8C00;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-start-battle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 215, 0, 0.6);
+  background: linear-gradient(135deg, #FFC700, #FFB700);
+}
+
+.btn-start-battle:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+}
+
 .pokemon-card-image {
   width: 60px;
   height: 60px;

@@ -3,6 +3,7 @@ import axios from 'axios'
 import Screen from './Screen'
 import Controls from './Controls'
 import Gacha from './Gacha'
+import BattleShowdown from './BattleShowdown'
 import './Pokedex.css'
 
 const Pokedex = () => {
@@ -10,8 +11,11 @@ const Pokedex = () => {
   const [selectedPokemon, setSelectedPokemon] = useState(null)
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
-  const [generation, setGeneration] = useState(1) // Génération actuelle
-  const [showGacha, setShowGacha] = useState(false) // Affichage du système Gacha
+  const [generation, setGeneration] = useState(1)
+  const [showGacha, setShowGacha] = useState(false)
+  const [battleMode, setBattleMode] = useState(false)
+  const [opponent, setOpponent] = useState(null)
+  const [selectingOpponent, setSelectingOpponent] = useState(false)
 
   // Charger les Pokémons au démarrage
   useEffect(() => {
@@ -94,33 +98,55 @@ const Pokedex = () => {
     pokemon.id.toString().includes(searchTerm)
   )
 
-  // Gérer l'ajout d'un Pokémon tiré au gacha
   const handlePokemonPulled = (pulledPokemon) => {
     setSelectedPokemon(pulledPokemon)
     setShowGacha(false)
   }
 
+  const handleStartBattle = (player, adversary) => {
+    setSelectedPokemon(player)
+    setOpponent(adversary)
+    setBattleMode(true)
+  }
+
   return (
     <div className="app-container">
-      <Controls 
-        pokemons={filteredPokemons}
-        selectedPokemon={selectedPokemon}
-        setSelectedPokemon={setSelectedPokemon}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        generation={generation}
-        setGeneration={setGeneration}
-        showGacha={showGacha}
-        setShowGacha={setShowGacha}
-      />
-      
-      {showGacha ? (
-        <Gacha onPokemonPulled={handlePokemonPulled} />
-      ) : (
-        <Screen 
-          selectedPokemon={selectedPokemon}
-          loading={loading}
+      {battleMode && selectedPokemon && opponent ? (
+        <BattleShowdown 
+          pokemon1={selectedPokemon}
+          pokemon2={opponent}
+          generation={generation}
+          onClose={() => {
+            setBattleMode(false)
+            setOpponent(null)
+          }}
         />
+      ) : (
+        <>
+          <Controls 
+            pokemons={filteredPokemons}
+            selectedPokemon={selectedPokemon}
+            setSelectedPokemon={setSelectedPokemon}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            generation={generation}
+            setGeneration={setGeneration}
+            showGacha={showGacha}
+            setShowGacha={setShowGacha}
+            onStartBattle={handleStartBattle}
+            selectingOpponent={selectingOpponent}
+            setSelectingOpponent={setSelectingOpponent}
+          />
+          
+          {showGacha ? (
+            <Gacha onPokemonPulled={handlePokemonPulled} />
+          ) : (
+            <Screen 
+              selectedPokemon={selectedPokemon}
+              loading={loading}
+            />
+          )}
+        </>
       )}
     </div>
   )

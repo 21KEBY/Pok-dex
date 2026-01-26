@@ -4,7 +4,7 @@ import useSound from '../hooks/useSound'
 import MovesList from './MovesList'
 import { translateType, translateStat } from '../utils/translations'
 
-const Screen = ({ selectedPokemon, loading }) => {
+const Screen = ({ selectedPokemon, loading, onBattle, generation, pokemons }) => {
   const { isPlaying, play, error } = useSound(selectedPokemon?.cry)
   
   if (loading) {
@@ -87,6 +87,10 @@ const Screen = ({ selectedPokemon, loading }) => {
               </div>
             ))}
           </div>
+
+          <button className="btn-battle-quick" onClick={() => onBattle && onBattle(selectedPokemon)}>
+            ⚔️ Lancer un Combat
+          </button>
         </div>
 
         <div className="pokemon-moves-section">
