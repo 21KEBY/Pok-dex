@@ -144,6 +144,7 @@ const Pokedex = () => {
             <Screen 
               selectedPokemon={selectedPokemon}
               loading={loading}
+              onBattle={() => setSelectingOpponent(true)}
             />
           )}
         </>

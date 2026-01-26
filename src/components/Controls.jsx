@@ -104,14 +104,6 @@ const Controls = ({
                 </div>
               </div>
             ))}
-            {selectedPokemon && (
-              <button 
-                className="btn-start-battle"
-                onClick={() => setSelectingOpponent(true)}
-              >
-                ⚔️ Défier en Combat
-              </button>
-            )}
           </>
         )}
       </div>

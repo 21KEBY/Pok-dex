@@ -207,6 +207,8 @@
 }
 
 .btn-start-battle {
+  position: sticky;
+  bottom: 0;
   grid-column: 1 / -1;
   padding: 15px;
   background: linear-gradient(135deg, #FFD700, #FFC700);
@@ -220,6 +222,7 @@
   box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
   text-transform: uppercase;
   letter-spacing: 1px;
+  z-index: 10;
 }
 
 .btn-start-battle:hover {
