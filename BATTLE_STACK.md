@@ -452,28 +452,6 @@ const executeAIAttack = async () => {
 .hp-bar[style*="width: 10%"] { background-color: #EF5350; }  /* Rouge */
 ```
 
-### **Timing et Triggers**
-
-```javascript
-// 1. Animation attaque (début)
-await playAttackAnimation(isPlayer)
-// setAttackingPokemon('player') → ajoute classe 'attacking'
-// 400ms (durée shake)
-// setAttackingPokemon(null) → retire classe
-
-// 2. Animation dégâts (défenseur)
-await playDamageAnimation(!isPlayer)
-// setTakingDamagePokemon('opponent') → ajoute classe 'takingDamage'
-// 400ms (durée flashDamage)
-// setTakingDamagePokemon(null) → retire classe
-
-// 3. Transition HP Bar
-setHp2(newHp)
-// React re-render → nouvelle width %
-// CSS transition: 0.5s cubic-bezier
-// Barre se remplit/vide en smooth
-```
-
 ---
 
 ## 🔊 Système Audio (Howler.js)
@@ -536,31 +514,6 @@ const useSound = (soundUrl) => {
 }
 ```
 
-### **Utilisation en Combat**
-
-```javascript
-// Dans BattleShowdown.jsx
-const { play: playAttackSound } = useSound(soundUrl)
-const { play: playDamageSound } = useSound(soundUrl)
-
-// Dans playAttackAnimation
-await playAttackAnimation(isPlayer)
-// → setAttackingPokemon('player')
-// → playAttackSound()  // Son joue immédiatement
-
-// Dans playDamageAnimation
-await playDamageAnimation(!isPlayer)
-// → setTakingDamagePokemon('opponent')
-// → playDamageSound()  // Son joue immédiatement
-```
-
-**Avantages Howler.js :**
-- ✅ Streaming audio (pas de buffering long)
-- ✅ Gestion automatique du volume/pan
-- ✅ Callback lifecycle (onplay, onend, etc)
-- ✅ Fallback formats multiples
-- ✅ Web Audio API sous le capot
-
 ---
 
 ## 📦 Hook usePokemonMoves - Récupération des Attaques
@@ -574,9 +527,6 @@ const usePokemonMoves = (pokemon, generation) => {
   const [error, setError] = useState(null)
   
   useEffect(() => {
-    // ─────────────────────────────────────
-    // EARLY RETURN: Pas de Pokémon
-    // ─────────────────────────────────────
     if (!pokemon) {
       setMoves([])
       return
@@ -587,105 +537,60 @@ const usePokemonMoves = (pokemon, generation) => {
       setError(null)
       
       try {
-        // ─────────────────────────────────────
         // ÉTAPE 1: Récupérer tous les moves
-        // ─────────────────────────────────────
         const response = await axios.get(
           `https://pokeapi.co/api/v2/pokemon/${pokemon.id}`
         )
         
-        // response.data.moves = [
-        //   {
-        //     move: { name: "tackle", url: "..." },
-        //     version_group_details: [
-        //       { version_group: { name: "red-blue" }, level_learned_at: 1 },
-        //       { version_group: { name: "gold-silver" }, level_learned_at: 5 }
-        //     ]
-        //   },
-        //   ...
-        // ]
-        
-        // ─────────────────────────────────────
         // ÉTAPE 2: Mapper génération → version_group
-        // ─────────────────────────────────────
         const genMap = {
-          1: 'red-blue',           // Gen 1: Rouge/Bleu
-          2: 'gold-silver',        // Gen 2: Or/Argent
-          3: 'ruby-sapphire',      // Gen 3: Rubis/Saphir
-          4: 'diamond-pearl',      // Gen 4: Diamant/Perle
-          5: 'black-white',        // Gen 5: Noir/Blanc
-          6: 'x-y',                // Gen 6: X/Y
-          7: 'sun-moon',           // Gen 7: Soleil/Lune
-          8: 'sword-shield',       // Gen 8: Épée/Bouclier
-          9: 'scarlet-violet'      // Gen 9: Écarlate/Violet
+          1: 'red-blue',
+          2: 'gold-silver',
+          3: 'ruby-sapphire',
+          4: 'diamond-pearl',
+          5: 'black-white',
+          6: 'x-y',
+          7: 'sun-moon',
+          8: 'sword-shield',
+          9: 'scarlet-violet'
         }
         
         const targetGeneration = genMap[generation] || genMap[1]
         
-        // ─────────────────────────────────────
         // ÉTAPE 3: Filtrer moves par génération
-        // ─────────────────────────────────────
         const filteredMoves = response.data.moves
           .filter(moveData => {
-            // Vérifier si move existe dans cette génération
             return moveData.version_group_details.some(detail => {
               return detail.version_group.name === targetGeneration
             })
           })
-          // Trier par niveau appris (optionnel)
           .sort((a, b) => 
             b.version_group_details[0].level_learned_at - 
             a.version_group_details[0].level_learned_at
           )
-          // Limiter à 4 moves (comme dans les vrais jeux)
           .slice(0, 4)
         
-        // ─────────────────────────────────────
         // ÉTAPE 4: Récupérer détails chaque move
-        // ─────────────────────────────────────
         const movesWithDetails = await Promise.all(
           filteredMoves.map(async (moveData) => {
-            // GET /move/{id}
             const moveDetails = await axios.get(moveData.move.url)
             
-            // moveDetails.data contient:
-            // - name: "Tackle"
-            // - names: [ { language: { name: "fr" }, name: "Charge" }, ... ]
-            // - power: 40  (null si move spécial)
-            // - accuracy: 100  (null si move de statut)
-            // - type: { name: "normal" }
-            // - damage_class: { name: "physical" }  (physical/special/status)
-            // - pp: 35  (Power Points)
-            // - effect_entries: [ { language: { name: "fr" }, effect: "..." }, ... ]
-            
-            // Récupérer nom français
             const frenchName = moveDetails.data.names.find(
               n => n.language.name === 'fr'
-            )
-            
-            // Récupérer description française
-            const frenchDesc = moveDetails.data.effect_entries.find(
-              e => e.language.name === 'fr'
             )
             
             return {
               id: moveDetails.data.id,
               name: frenchName ? frenchName.name : moveData.move.name,
-              nameEn: moveData.move.name,
               type: moveDetails.data.type.name,
-              power: moveDetails.data.power || 0,           // 0 = move spécial
-              accuracy: moveDetails.data.accuracy || 100,   // % hit
-              priority: moveDetails.data.priority || 0,     // -7 à +5
-              category: moveDetails.data.damage_class.name, // physical/special/status
-              description: frenchDesc?.effect || 'N/A',
-              pp: moveDetails.data.pp || 15                 // Power Points max
+              power: moveDetails.data.power || 0,
+              accuracy: moveDetails.data.accuracy || 100,
+              category: moveDetails.data.damage_class.name,
+              pp: moveDetails.data.pp || 15
             }
           })
         )
         
-        // ─────────────────────────────────────
-        // ÉTAPE 5: Set state
-        // ─────────────────────────────────────
         setMoves(movesWithDetails)
         
       } catch (err) {
@@ -696,204 +601,12 @@ const usePokemonMoves = (pokemon, generation) => {
       }
     }
     
-    // Déclencher fetch
     fetchMoves()
     
-  }, [pokemon, generation])  // Re-run si pokemon ou generation change
+  }, [pokemon, generation])
   
   return { moves, loading, error }
 }
-```
-
-### **Exemple Concret: Pikachu Gen 1**
-
-```
-INPUT:
-- pokemon = { id: 25, name: "Pikachu", ... }
-- generation = 1
-
-ÉTAPE 1: Récupérer moves
-GET /pokemon/25
-→ response.data.moves = [
-    { move: "thunderbolt", version_group_details: [...] },
-    { move: "quick-attack", version_group_details: [...] },
-    ...
-  ]
-
-ÉTAPE 2: Mapper génération
-generation = 1 → targetGeneration = 'red-blue'
-
-ÉTAPE 3: Filtrer par 'red-blue'
-moves dispo en gen 1 seulement = [thunderbolt, quick-attack, thunder-wave, ...]
-
-ÉTAPE 4: Limiter à 4
-slice(0, 4) = [thunderbolt, quick-attack, thunder-wave, strength]
-
-ÉTAPE 5: Récupérer détails (4 appels parallèles)
-GET /move/24  (thunderbolt)
-→ power: 90, accuracy: 100, type: "electric"
-
-GET /move/98  (quick-attack)
-→ power: 40, accuracy: 100, type: "normal"
-
-GET /move/93  (thunder-wave)
-→ power: null, accuracy: 75, type: "electric"
-
-GET /move/70  (strength)
-→ power: 80, accuracy: 100, type: "normal"
-
-OUTPUT:
-moves = [
-  { id: 24, name: "Tonnerre", power: 90, type: "electric", ... },
-  { id: 98, name: "Vive-Attaque", power: 40, type: "normal", ... },
-  { id: 93, name: "Étincelle", power: 0, type: "electric", ... },
-  { id: 70, name: "Surpuissance", power: 80, type: "normal", ... }
-]
-```
-
----
-
-## 🎮 Cycle État (State Management)
-
-### **État Initial**
-
-```javascript
-const [hp1, setHp1] = useState(pokemon1.stats[0].base_stat)     // 35 (Pikachu)
-const [hp2, setHp2] = useState(pokemon2.stats[0].base_stat)     // 79 (Blastoise)
-const [battleLog, setBattleLog] = useState([])                  // []
-const [battleInProgress, setBattleInProgress] = useState(true)  // true
-const [waitingForAction, setWaitingForAction] = useState(false) // false
-const [attackingPokemon, setAttackingPokemon] = useState(null)  // null
-const [takingDamagePokemon, setTakingDamagePokemon] = useState(null) // null
-```
-
-### **Transitions d'État Typiques**
-
-```
-INIT
-├─ waitingForAction: false
-├─ battleInProgress: true
-├─ hp1: 35, hp2: 79
-├─ attackingPokemon: null
-├─ takingDamagePokemon: null
-└─ battleLog: []
-
-↓ JOUEUR CLIQUE ATTAQUE
-
-ATTAQUE
-├─ waitingForAction: true  (désactiver boutons)
-├─ attackingPokemon: 'player'  (animation)
-│  └─ playAttackSound()
-│  └─ 400ms
-│  └─ attackingPokemon: null
-├─ battleLog: [{ text: "Pikachu utilise...", type: "attack" }]
-
-↓ VÉRIFICATION PRÉCISION & CALCUL
-
-DÉGÂTS
-├─ takingDamagePokemon: 'opponent'  (animation)
-│  └─ playDamageSound()
-│  └─ 400ms
-│  └─ takingDamagePokemon: null
-├─ setHp2(79 - 21) = 58  (DÉCLENCHE RE-RENDER)
-└─ battleLog: [..., { text: "21 dégâts", type: "damage" }]
-
-↓ RE-RENDER REACT
-
-AFFICHAGE
-└─ Barre HP2 passe de 100% à 73%
-   (animation CSS 0.5s smooth)
-
-↓ VÉRIFIER K.O
-
-K.O CHECK
-├─ if (hp2 !== 0)
-│  └─ executeAIAttack()  (BOUCLE)
-│     └─ Appelle executeAttack(move, false)
-└─ else
-   ├─ setBattleInProgress(false)
-   ├─ addBattleLog("VICTOIRE!", 'victory')
-   └─ Afficher bouton "Retour au Pokédex"
-
-RETOUR
-├─ waitingForAction: false
-├─ battleInProgress: false
-└─ Cliq "Fermer" → setBattleMode(false) → Retour Pokedex
-```
-
----
-
-## 🔄 Flux d'API Parallèle
-
-```
-┌─────────────────────────────────────────────────────────┐
-│            APPELS API PARALLÈLES (Promise.all)          │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  GET /pokemon/{id}  ──────────────────┐                │
-│                                        ├─→ Détails    │
-│  GET /pokemon-species/{id} ───────────┤                │
-│                                        │                │
-│  GET /pokemon/{id} (moves) ────────────┤                │
-│       └─ GET /move/1                   │                │
-│       └─ GET /move/2                   ├─→ Moves      │
-│       └─ GET /move/3                   │                │
-│       └─ GET /move/4  ────────────────┘                │
-│                                                         │
-│  (4 moves × 2 Pokemon = 8 appels HTTP)                │
-│  Parallèle: ~1 sec                                    │
-│  Séquentiel: ~8 sec                                   │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
-```
-
-**Optimization :**
-```javascript
-// ✅ RAPIDE: Promise.all (parallèle)
-const movesWithDetails = await Promise.all(
-  filteredMoves.map(moveData => axios.get(moveData.move.url))
-)
-
-// ❌ LENT: for loop (séquentiel)
-for (const moveData of filteredMoves) {
-  const details = await axios.get(moveData.move.url)
-  movesWithDetails.push(details)
-}
-```
-
----
-
-## 📊 Composants React & Renders
-
-### **Quand BattleShowdown Re-Render ?**
-
-```javascript
-// État change → Re-render
-setHp1(newHp) ✅ Re-render
-setHp2(newHp) ✅ Re-render
-setAttackingPokemon('player') ✅ Re-render
-setTakingDamagePokemon('opponent') ✅ Re-render
-addBattleLog(...) ✅ Re-render
-setBattleInProgress(false) ✅ Re-render
-
-// Utiliser useRef pour éviter re-render
-playerSpriteRef.current.classList.add('attacking')  ❌ Pas de re-render
-// Mais CSS animation fonctionne quand-même! Plus rapide
-```
-
-### **Props vs State**
-
-```javascript
-// ✅ PROPS (de Pokedex)
-{ pokemon1, pokemon2, generation, onClose }
-
-// ✅ STATE (Local)
-const [hp1, setHp1] = useState(...)
-const [battleLog, setBattleLog] = useState(...)
-
-// ❌ NE PAS faire
-// const hp1 = pokemon1.stats[0].base_stat  // Valeur figée
-// Utiliser useState à la place pour qu'elle change
 ```
 
 ---
@@ -929,54 +642,6 @@ console.log('BattleInProgress:', battleInProgress)
 // 4. Inspecter DOM
 spriteRef.current.classList  // Vérifier classes animées
 ```
-
----
-
-## 📈 Statistiques Jeu
-
-**Exemple Pikachu vs Blastoise :**
-
-```
-Pikachu:
-- PV: 35
-- ATK: 55
-- DEF: 40
-- SP.ATK: 50
-- SP.DEF: 50
-- SPD: 90
-- Moves: Tonnerre (90), Vive-Attaque (40), Étincelle (0), Surpuissance (80)
-
-Blastoise:
-- PV: 79
-- ATK: 83
-- DEF: 100
-- SP.ATK: 85
-- SP.DEF: 105
-- SPD: 78
-- Moves: Hydrocanon (110), Bulles (40), Glace (80), Tremblement (80)
-
-Combat Probable:
-- Pikachu Tonnerre (90) → 21-25 dégâts
-- Blastoise a besoin 2-3 coups
-- Blastoise Hydrocanon (110) → 38-42 dégâts
-- Pikachu a besoin 1 coup + chance
-
-
-Verdict: Blastoise gagne 70% du temps
-```
-
----
-
-## 🎓 Concepts React Avancés Utilisés
-
-1. **useState** : Gestion état local
-2. **useEffect** : Effets secondaires
-3. **useRef** : Accès direct DOM (animations)
-4. **Async/Await** : Orchestration actions
-5. **Promise.all** : Parallélisation requêtes
-6. **Conditional Rendering** : if ? <A> : <B>
-7. **Event Handlers** : onClick, onError
-8. **CSS Classes Dynamiques** : className={`sprite ${active ? 'attacking' : ''}`}
 
 ---
 
