@@ -1,0 +1,162 @@
+.moves-section {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.moves-section h3 {
+  color: #fff;
+  margin: 0;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding-bottom: 15px;
+  flex-shrink: 0;
+}
+
+.no-moves {
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+}
+
+.moves-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.move-card {
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(79, 195, 247, 0.3);
+  border-radius: 10px;
+  padding: 20px 24px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+}
+
+.move-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: linear-gradient(180deg, #4fc3f7, #2196f3);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.move-card:hover {
+  background: rgba(79, 195, 247, 0.15);
+  border-color: #4fc3f7;
+  transform: translateX(8px);
+  box-shadow: 0 4px 12px rgba(79, 195, 247, 0.4);
+}
+
+.move-card:hover::before {
+  opacity: 1;
+}
+
+.move-card.expanded {
+  background: rgba(79, 195, 247, 0.25);
+  border-color: #4fc3f7;
+  box-shadow: 0 0 20px rgba(79, 195, 247, 0.6);
+}
+
+.move-card.expanded::before {
+  opacity: 1;
+}
+
+.move-card.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.move-name {
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  line-height: 1.5;
+  flex: 1;
+  letter-spacing: 0.5px;
+}
+
+.move-loading {
+  font-size: 1.5rem;
+  animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.move-details {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(79, 195, 247, 0.3);
+}
+
+.move-hint {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+  font-style: italic;
+  display: block;
+  text-align: center;
+}
+
+/* Animation d'apparition */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.move-details {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Scrollbar pour la liste des moves */
+.moves-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.moves-grid::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.moves-grid::-webkit-scrollbar-thumb {
+  background: rgba(79, 195, 247, 0.5);
+  border-radius: 10px;
+}
+
+.moves-grid::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 195, 247, 0.7);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .move-name {
+    font-size: 0.9rem;
+  }
+  
+  .move-card {
+    padding: 12px 14px;
+  }
+}

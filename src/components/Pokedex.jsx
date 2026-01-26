@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Screen from './Screen'
 import Controls from './Controls'
+import Gacha from './Gacha'
 import './Pokedex.css'
 
 const Pokedex = () => {
@@ -10,6 +11,7 @@ const Pokedex = () => {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [generation, setGeneration] = useState(1) // Génération actuelle
+  const [showGacha, setShowGacha] = useState(false) // Affichage du système Gacha
 
   // Charger les Pokémons au démarrage
   useEffect(() => {
@@ -56,6 +58,12 @@ const Pokedex = () => {
           // Récupérer le cri du Pokémon depuis PokeAPI
           const cry = details.data.cries?.latest || details.data.cries?.legacy || null
           
+          // Récupérer les attaques (limiter à 8 pour ne pas surcharger)
+          const moves = details.data.moves.slice(0, 8).map(m => ({
+            name: m.move.name,
+            url: m.move.url
+          }))
+          
           return {
             id: pokemonId,
             name: nameFr, // Nom en français
@@ -64,7 +72,8 @@ const Pokedex = () => {
             fallbackImage: details.data.sprites.other['official-artwork'].front_default,
             types: details.data.types.map(t => t.type.name),
             stats: details.data.stats,
-            cry: cry // URL du son du Pokémon
+            cry: cry, // URL du son du Pokémon
+            moves: moves // Liste des attaques
           }
         })
       )
@@ -85,43 +94,34 @@ const Pokedex = () => {
     pokemon.id.toString().includes(searchTerm)
   )
 
-  return (
-    <div className={`pokedex gen-${generation}`}>
-      <div className="pokedex-top">
-        <div className="led-lights">
-          <div className="led led-blue"></div>
-          <div className="led led-red"></div>
-          <div className="led led-yellow"></div>
-          <div className="led led-green"></div>
-        </div>
-      </div>
+  // Gérer l'ajout d'un Pokémon tiré au gacha
+  const handlePokemonPulled = (pulledPokemon) => {
+    setSelectedPokemon(pulledPokemon)
+    setShowGacha(false)
+  }
 
-      <div className="pokedex-body">
+  return (
+    <div className="app-container">
+      <Controls 
+        pokemons={filteredPokemons}
+        selectedPokemon={selectedPokemon}
+        setSelectedPokemon={setSelectedPokemon}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        generation={generation}
+        setGeneration={setGeneration}
+        showGacha={showGacha}
+        setShowGacha={setShowGacha}
+      />
+      
+      {showGacha ? (
+        <Gacha onPokemonPulled={handlePokemonPulled} />
+      ) : (
         <Screen 
           selectedPokemon={selectedPokemon}
           loading={loading}
         />
-
-        <Controls 
-          pokemons={filteredPokemons}
-          selectedPokemon={selectedPokemon}
-          setSelectedPokemon={setSelectedPokemon}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          generation={generation}
-          setGeneration={setGeneration}
-        />
-      </div>
-
-      <div className="pokedex-bottom">
-        <div className="hinge"></div>
-        <div className="speaker">
-          <div className="speaker-line"></div>
-          <div className="speaker-line"></div>
-          <div className="speaker-line"></div>
-          <div className="speaker-line"></div>
-        </div>
-      </div>
+      )}
     </div>
   )
 }

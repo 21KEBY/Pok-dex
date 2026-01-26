@@ -8,7 +8,9 @@ const Controls = ({
   searchTerm, 
   setSearchTerm,
   generation,
-  setGeneration 
+  setGeneration,
+  showGacha,
+  setShowGacha
 }) => {
   return (
     <div className="controls">
@@ -21,6 +23,13 @@ const Controls = ({
           className="search-input"
         />
       </div>
+
+      <button 
+        className={`gacha-button ${showGacha ? 'active' : ''}`}
+        onClick={() => setShowGacha(!showGacha)}
+      >
+        {showGacha ? 'Pokédex' : 'Gacha'}
+      </button>
 
       <div className="generation-selector">
         <label>Génération:</label>
