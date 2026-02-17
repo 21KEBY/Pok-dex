@@ -28,6 +28,22 @@ function Navbar() {
             <span className="nav-icon">🎁</span>
             <span>Gacha</span>
           </Link>
+
+          <Link 
+            to="/fusion" 
+            className={`navbar-item ${location.pathname === '/fusion' ? 'active' : ''}`}
+          >
+            <span className="nav-icon">✨</span>
+            <span>Créer un Pokémon</span>
+          </Link>
+
+          <Link 
+            to="/generated" 
+            className={`navbar-item ${location.pathname === '/generated' ? 'active' : ''}`}
+          >
+            <span className="nav-icon">🧬</span>
+            <span>Pokémons générés</span>
+          </Link>
           
           <Link 
             to="/battle" 

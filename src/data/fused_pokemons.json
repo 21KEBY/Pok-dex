@@ -1,0 +1,68 @@
+{
+  "18-8": {
+    "id": "18-8",
+    "name": "Roucaraffe",
+    "image": {
+      "type": "image",
+      "local_path": "/static/images/fusions/roucaraffe.png",
+      "fusion_name": "Roucaraffe",
+      "size_bytes": 1555278
+    },
+    "cry": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/8.ogg",
+    "types": [
+      "flying",
+      "normal"
+    ],
+    "stats": {
+      "hp": 78,
+      "attack": 78,
+      "defense": 85,
+      "sp_attack": 0,
+      "sp_defense": 0,
+      "speed": 87
+    },
+    "moves": [
+      "razor-wind",
+      "gust",
+      "wing-attack",
+      "whirlwind",
+      "fly",
+      "sand-attack",
+      "headbutt",
+      "tackle"
+    ]
+  },
+  "12-2": {
+    "id": "12-2",
+    "name": "Butterblossom",
+    "image": {
+      "type": "image",
+      "local_path": "/static/images/fusions/butterblossom.png",
+      "fusion_name": "Butterblossom",
+      "size_bytes": 1744110
+    },
+    "cry": "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/2.ogg",
+    "types": [
+      "bug",
+      "grass"
+    ],
+    "stats": {
+      "hp": 69,
+      "attack": 61,
+      "defense": 64,
+      "sp_attack": 0,
+      "sp_defense": 0,
+      "speed": 74
+    },
+    "moves": [
+      "razor-wind",
+      "gust",
+      "whirlwind",
+      "headbutt",
+      "tackle",
+      "take-down",
+      "double-edge",
+      "supersonic"
+    ]
+  }
+}

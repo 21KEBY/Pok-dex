@@ -20,6 +20,46 @@ function PokemonDetailPage() {
   const loadPokemonDetails = async () => {
     setLoading(true);
     try {
+      const isFusion = id.includes('-');
+
+      if (isFusion) {
+        const fusionResponse = await axios.get(`http://localhost:8081/api/pokedex/${id}`);
+        const fusion = fusionResponse.data;
+
+        const fusionImagePath = fusion.image?.local_path || fusion.image?.url || fusion.image;
+        const fusionImage = fusionImagePath
+          ? `http://localhost:8081${fusionImagePath}`
+          : null;
+
+        const statsArray = Object.entries(fusion.stats || {}).map(([key, value]) => ({
+          stat: { name: key.replace('_', '-') },
+          base_stat: value
+        }));
+
+        const movesArray = (fusion.moves || []).map((moveName) => ({
+          move: { name: moveName }
+        }));
+
+        const fusionData = {
+          id: fusion.id,
+          name: fusion.name,
+          nameEn: fusion.name,
+          image: fusionImage,
+          fallbackImage: fusionImage,
+          types: fusion.types || [],
+          stats: statsArray,
+          moves: movesArray,
+          cry: fusion.cry || null,
+          height: null,
+          weight: null,
+          abilities: []
+        };
+
+        setPokemon(fusionData);
+        setDescription("Fusion générée par l'agentique.");
+        return;
+      }
+
       const details = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
       const species = await axios.get(details.data.species.url);
 
@@ -101,7 +141,7 @@ function PokemonDetailPage() {
       <div className="detail-container">
         <div className="detail-header">
           <div className="detail-image-section">
-            <div className="pokemon-id-large">#{String(pokemon.id).padStart(3, '0')}</div>
+            <div className="pokemon-id-large">#{String(pokemon.id)}</div>
             <div className="detail-image-wrapper">
               <img
                 src={pokemon.image}
@@ -135,17 +175,20 @@ function PokemonDetailPage() {
             <div className="physical-info">
               <div className="info-item">
                 <span className="info-label">Taille</span>
-                <span className="info-value">{pokemon.height} m</span>
+                <span className="info-value">{pokemon.height ? `${pokemon.height} m` : 'N/A'}</span>
               </div>
               <div className="info-item">
                 <span className="info-label">Poids</span>
-                <span className="info-value">{pokemon.weight} kg</span>
+                <span className="info-value">{pokemon.weight ? `${pokemon.weight} kg` : 'N/A'}</span>
               </div>
             </div>
 
             <div className="abilities-section">
               <h3>Capacités</h3>
               <div className="abilities-list">
+                {pokemon.abilities.length === 0 && (
+                  <span className="ability-badge">N/A</span>
+                )}
                 {pokemon.abilities.map((ability, index) => (
                   <span key={index} className="ability-badge">
                     {ability}
