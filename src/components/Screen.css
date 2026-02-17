@@ -94,7 +94,7 @@
   padding: 30px;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
   border-radius: 20px;
-  min-height: 150px;  position: relative; /* Important pour l'overlay d'animation */}
+  min-height: 250px;  position: relative; /* Important pour l'overlay d'animation */}
 
 .pokemon-image {
   max-width: 150px;
@@ -112,7 +112,7 @@
 .pokemon-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 30px;
+  gap: 20px;
   flex: 1;
 }
 
@@ -301,7 +301,6 @@
   transform: translateY(0);
 }
 
-<<<<<<< HEAD
 /* Responsive */
 @media (max-width: 968px) {
   .pokemon-content {
@@ -322,7 +321,6 @@
     max-height: none;
   }
 }
-=======
 .stat-value {
   color: #a8e6a1;
   font-weight: bold;
@@ -362,4 +360,3 @@
   cursor: not-allowed;
   transform: none;
 }
->>>>>>> da9e9a8a1e79526593e93dbfcba0ff61c24a33d6

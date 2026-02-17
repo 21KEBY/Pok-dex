@@ -1,13 +1,25 @@
-import { useState, useEffect } from 'react'
-import Pokedex from './components/Pokedex'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import HomePage from './pages/HomePage';
+import PokemonDetailPage from './pages/PokemonDetailPage';
+import GachaPage from './pages/GachaPage';
+import BattlePage from './pages/BattlePage';
+import './App.css';
 
 function App() {
   return (
-    <div className="app">
-      <Pokedex />
-    </div>
-  )
+    <Router>
+      <div className="app">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/pokemon/:id" element={<PokemonDetailPage />} />
+          <Route path="/gacha" element={<GachaPage />} />
+          <Route path="/battle" element={<BattlePage />} />
+        </Routes>
+      </div>
+    </Router>
+  );
 }
 
-export default App
+export default App;

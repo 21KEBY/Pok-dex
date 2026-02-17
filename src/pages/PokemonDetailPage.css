@@ -1,0 +1,369 @@
+.detail-page {
+  min-height: 100vh;
+  padding: 90px 20px 40px;
+  background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.back-button-top {
+  max-width: 1400px;
+  margin: 0 auto 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: white;
+  border: 2px solid #dee2e6;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #495057;
+}
+
+.back-button-top:hover {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+  transform: translateX(-5px);
+}
+
+.detail-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.detail-header {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 40px;
+  margin-bottom: 30px;
+}
+
+.detail-image-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.pokemon-id-large {
+  font-size: 18px;
+  font-weight: bold;
+  color: #adb5bd;
+}
+
+.detail-image-wrapper {
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.detail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cry-button {
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cry-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.cry-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.detail-info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.detail-name {
+  font-size: 48px;
+  font-weight: bold;
+  color: #212529;
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.detail-types {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.type-badge-large {
+  padding: 10px 24px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.description-box {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 12px;
+  border-left: 4px solid #667eea;
+}
+
+.description-box h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  color: #495057;
+}
+
+.description-box p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #6c757d;
+}
+
+.physical-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.info-item {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-label {
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 600;
+}
+
+.info-value {
+  font-size: 20px;
+  font-weight: bold;
+  color: #212529;
+}
+
+.abilities-section h3 {
+  margin: 0 0 15px 0;
+  font-size: 18px;
+  color: #495057;
+}
+
+.abilities-list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ability-badge {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.detail-stats-section {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.detail-stats-section h2 {
+  margin: 0 0 30px 0;
+  font-size: 28px;
+  color: #212529;
+}
+
+.stats-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+  text-transform: uppercase;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #212529;
+}
+
+.stat-bar {
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  transition: width 0.5s ease;
+  border-radius: 4px;
+}
+
+.detail-moves-section {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.detail-moves-section h2 {
+  margin: 0 0 20px 0;
+  font-size: 28px;
+  color: #212529;
+}
+
+.actions-section {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.action-button {
+  padding: 16px 40px;
+  font-size: 18px;
+  font-weight: 700;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.action-button.battle {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.action-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.error-container {
+  text-align: center;
+  padding: 100px 20px;
+}
+
+.error-container h2 {
+  font-size: 32px;
+  color: #6c757d;
+  margin-bottom: 30px;
+}
+
+.back-button {
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .detail-header {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .detail-image-wrapper {
+    width: 250px;
+    height: 250px;
+  }
+
+  .detail-name {
+    font-size: 36px;
+  }
+
+  .detail-types {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .detail-page {
+    padding: 70px 15px 30px;
+  }
+
+  .detail-header,
+  .detail-stats-section,
+  .detail-moves-section {
+    padding: 25px;
+  }
+
+  .detail-image-wrapper {
+    width: 200px;
+    height: 200px;
+  }
+
+  .detail-name {
+    font-size: 28px;
+  }
+
+  .physical-info {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokédex Kalos Pro</title>
+    <style>
+        :root {
+            --dex-orange: #e65c23;
+            --dex-orange-dark: #b34216;
+            --dex-black: #1a1a1a;
+            --screen-bg: #222;
+            --screen-light: #b5d6e0;
+            --rarity-common: #9ea1a1;
+            --rarity-rare: #4592c4;
+            --rarity-epic: #a33ea1;
+            --rarity-legend: #f1c40f;
+        }
+
+        body {
+            background: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* --- DESIGN DU POKEDEX (KALOS STYLE) --- */
+        .pokedex-body {
+            position: relative;
+            width: 800px;
+            height: 400px;
+            background: var(--dex-orange);
+            border-radius: 40px 120px 40px 120px;
+            border: 6px solid #000;
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            box-shadow: 0 20px 0 var(--dex-orange-dark), 0 30px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        .pokedex-body::before {
+            content: ""; position: absolute; left: 0; width: 100%; height: 55%;
+            background: var(--dex-black); z-index: 1; border-top: 5px solid #000; border-bottom: 5px solid #000;
+        }
+
+        /* Section Gauche : Optique */
+        .pokedex-left { position: relative; z-index: 2; flex: 1; display: flex; justify-content: center; }
+        .lens-outer {
+            width: 140px; height: 140px; background: #ddd; border-radius: 50%;
+            border: 10px solid #111; display: flex; justify-content: center; align-items: center;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .lens-inner {
+            width: 80px; height: 80px; background: radial-gradient(circle at 30% 30%, #00d2ff, #0056b3);
+            border-radius: 50%; border: 4px solid #000; position: relative;
+            box-shadow: 0 0 20px rgba(0,210,255,0.6);
+        }
+
+        /* Section Centre : Écran */
+        .pokedex-center { position: relative; z-index: 2; flex: 3; padding: 0 20px; }
+        .screen-border { background: #333; padding: 10px; border-radius: 15px; border: 4px solid #000; height: 280px; }
+        .screen-display {
+            background: var(--screen-bg); height: 100%; border-radius: 8px; position: relative;
+            overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .scanlines {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 4px, 3px 100%; pointer-events: none; z-index: 10;
+        }
+
+        /* Éléments Pokémon */
+        .pkmn-sprite { width: 150px; height: 150px; z-index: 5; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
+        .attack-fx {
+            position: absolute; width: 200px; height: 200px; z-index: 15;
+            pointer-events: none; display: none; object-fit: contain;
+        }
+
+        /* Section Droite : Interface */
+        .pokedex-right { position: relative; z-index: 2; flex: 1.2; display: flex; flex-direction: column; gap: 15px; }
+        .btn-group { display: flex; flex-direction: column; gap: 8px; }
+        button {
+            padding: 10px; border: 2px solid #000; border-radius: 5px; cursor: pointer;
+            font-weight: bold; color: white; transition: 0.2s; background: #444;
+        }
+        button:hover { transform: scale(1.05); filter: brightness(1.2); }
+        .btn-gacha { background: var(--rarity-epic); }
+        .btn-battle { background: #c0392b; }
+
+        /* Animation de scan */
+        .scan-anim {
+            position: absolute; width: 100%; height: 2px; background: rgba(0, 210, 255, 0.5);
+            top: 0; animation: scanMove 3s linear infinite; z-index: 11;
+        }
+        @keyframes scanMove { 0% { top: 0; } 100% { top: 100%; } }
+
+        /* Infos Pokémon */
+        .pkmn-info { color: var(--screen-light); text-align: center; margin-top: 10px; z-index: 6; }
+        .pkmn-name { font-size: 1.2rem; text-transform: uppercase; margin: 0; letter-spacing: 2px; }
+        .rarity-tag { font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; margin-top: 5px; display: inline-block; }
+    </style>
+</head>
+<body>
+
+<div class="pokedex-body">
+    <div class="pokedex-left">
+        <div class="lens-outer">
+            <div class="lens-inner"></div>
+        </div>
+    </div>
+
+    <div class="pokedex-center">
+        <div class="screen-border">
+            <div class="screen-display" id="screen">
+                <div class="scanlines"></div>
+                <div class="scan-anim"></div>
+                
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/25.gif" 
+                     alt="Pokemon" class="pkmn-sprite" id="pkmnSprite">
+                
+                <img id="attackAsset" src="" class="attack-fx" crossorigin="anonymous">
+
+                <div class="pkmn-info">
+                    <p class="pkmn-name" id="pkmnName">PIKACHU</p>
+                    <span class="rarity-tag" id="rarityTag" style="background: var(--rarity-common)">COMMUN</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pokedex-right">
+        <div class="btn-group">
+            <button class="btn-gacha" onclick="gachaPull()">🎁 TIRAGE GACHA</button>
+            <button class="btn-battle" onclick="playAttack('thunderbolt')">⚡ ÉLECTROCLEAN</button>
+            <button class="btn-battle" onclick="playAttack('fireblast')" style="background: #e67e22;">🔥 DÉFLAGRATION</button>
+            <button class="btn-battle" onclick="playAttack('hydropump')" style="background: #2980b9;">💧 HYDROCANON</button>
+            <button onclick="nextPokemon()">SUIVANT ❯</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- CONFIGURATION ---
+    const PROXY_FX = "https://cdn.statically.io/gh/smogon/pokemon-showdown-client/master/sprites/fx/";
+    let currentId = 25;
+
+    // --- LOGIQUE POKEAPI ---
+    async function fetchPokemon(id) {
+        try {
+            const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+            const data = await res.json();
+            
+            document.getElementById('pkmnSprite').src = data.sprites.versions['generation-v']['black-white'].animated.front_default || data.sprites.front_default;
+            document.getElementById('pkmnName').innerText = data.name.toUpperCase();
+            
+            // Simulation de rareté basée sur l'ID
+            updateRarity(id);
+        } catch (e) { console.error("Erreur API", e); }
+    }
+
+    function updateRarity(id) {
+        const tag = document.getElementById('rarityTag');
+        if (id > 800) { tag.innerText = "LÉGENDAIRE"; tag.style.background = "var(--rarity-legend)"; }
+        else if (id > 600) { tag.innerText = "ÉPIQUE"; tag.style.background = "var(--rarity-epic)"; }
+        else if (id > 300) { tag.innerText = "RARE"; tag.style.background = "var(--rarity-rare)"; }
+        else { tag.innerText = "COMMUN"; tag.style.background = "var(--rarity-common)"; }
+    }
+
+    // --- LOGIQUE GACHA ---
+    function gachaPull() {
+        const screen = document.getElementById('screen');
+        screen.style.filter = "brightness(2) contrast(2)"; // Flash d'ouverture
+        
+        setTimeout(() => {
+            const randomId = Math.floor(Math.random() * 1025) + 1;
+            fetchPokemon(randomId);
+            screen.style.filter = "none";
+        }, 300);
+    }
+
+    // --- LOGIQUE COMBAT (ANIMATIONS) ---
+    function playAttack(effectName) {
+        const fx = document.getElementById('attackAsset');
+        
+        // Utilisation du proxy Statically pour éviter CORB
+        fx.src = `${PROXY_FX}${effectName}.png?t=${Date.now()}`;
+        fx.style.display = "block";
+
+        // Vibration de l'écran
+        document.querySelector('.screen-border').animate([
+            { transform: 'translate(1px, 1px) rotate(0deg)' },
+            { transform: 'translate(-1px, -2px) rotate(-1deg)' },
+            { transform: 'translate(-3px, 0px) rotate(1deg)' },
+            { transform: 'translate(3px, 2px) rotate(0deg)' },
+            { transform: 'translate(1px, -1px) rotate(1deg)' },
+            { transform: 'translate(0px, 0px) rotate(0deg)' }
+        ], { duration: 500 });
+
+        setTimeout(() => {
+            fx.style.display = "none";
+        }, 1500);
+    }
+
+    function nextPokemon() {
+        currentId++;
+        fetchPokemon(currentId);
+    }
+
+    // Init
+    fetchPokemon(currentId);
+</script>
+
+</body>
+</html>

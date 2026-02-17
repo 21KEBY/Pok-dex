@@ -17,7 +17,7 @@ const MovesList = ({ moves, pokemonName }) => {
         {moves.map((move, index) => (
           <div key={index} className="move-card">
             <div className="move-name">
-              {move.name.replace(/-/g, ' ')}
+              {move.move?.name?.replace(/-/g, ' ') || 'Capacité inconnue'}
             </div>
           </div>
         ))}
