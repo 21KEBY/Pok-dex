@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import fusedPokemons from '../data/fused_pokemons.json';
 import './GeneratedPage.css';
 
 function GeneratedPage() {
+  const navigate = useNavigate();
   const [pokemons, setPokemons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -37,7 +39,14 @@ function GeneratedPage() {
             const imageUrl = imagePath ? `http://localhost:8081${imagePath}` : null;
 
             return (
-              <div key={pokemon.id} className="pokemon-card">
+              <div
+                key={pokemon.id}
+                className="pokemon-card"
+                onClick={() => navigate(`/pokemon/${pokemon.id}`)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && navigate(`/pokemon/${pokemon.id}`)}
+              >
                 <div className="pokemon-card-inner">
                   <div className="pokemon-id">#{pokemon.id}</div>
                   <div className="pokemon-image-container">
